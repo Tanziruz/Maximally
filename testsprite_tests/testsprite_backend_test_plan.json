@@ -2,51 +2,51 @@
   {
     "id": "TC001",
     "title": "post api auth register user registration",
-    "description": "Test user registration with valid name email and password to ensure a new user is created and a JWT token is issued."
+    "description": "Test the user registration endpoint to ensure users can register with valid name, email, and password. Verify that the response includes success status, user object, and JWT token. Also verify password is hashed and stored securely."
   },
   {
     "id": "TC002",
     "title": "post api auth login user login",
-    "description": "Test user login with valid email and password to verify successful authentication and receipt of JWT token."
+    "description": "Test the user login endpoint with valid and invalid credentials. Verify that successful login returns success status, user object, and JWT token. Verify invalid credentials return appropriate error."
   },
   {
     "id": "TC003",
     "title": "get api auth me get current authenticated user",
-    "description": "Test retrieval of current authenticated user details using a valid JWT token."
+    "description": "Test the endpoint to get current authenticated user details. Verify that a valid JWT token returns success status and user object. Verify that missing or invalid token returns unauthorized error."
   },
   {
     "id": "TC004",
     "title": "post api chat send message to ai chat",
-    "description": "Test sending a message to the AI chat endpoint and verify the AI response, conversation id, and optional workflow generation."
+    "description": "Test sending a message to the AI chat endpoint. Verify that the response includes success status, conversationId, AI response message, and optionally a workflow object representing generated workflow definitions."
   },
   {
     "id": "TC005",
     "title": "get api workflows get all user workflows",
-    "description": "Test fetching all workflows for the authenticated user to verify correct workflows are returned."
+    "description": "Test retrieving all workflows for the authenticated user. Verify that the response includes success status and an array of workflows belonging to the user."
   },
   {
     "id": "TC006",
     "title": "post api workflows create new workflow",
-    "description": "Test creating a new workflow with valid name description trigger and steps to ensure workflow is saved correctly."
+    "description": "Test creating a new workflow with valid name, description, trigger, and steps. Verify that the response includes success status and the created workflow object."
   },
   {
     "id": "TC007",
     "title": "get api workflows id get specific workflow by id",
-    "description": "Test retrieving a specific workflow by its id to verify correct workflow details are returned."
+    "description": "Test retrieving a specific workflow by its ID. Verify that the response includes success status and the workflow object if it exists. Verify appropriate error if workflow not found."
   },
   {
     "id": "TC008",
     "title": "put api workflows id update workflow",
-    "description": "Test updating an existing workflow with optional fields including name description trigger steps and enabled status."
+    "description": "Test updating an existing workflow with optional fields such as name, description, trigger, steps, and enabled status. Verify that the response includes success status and the updated workflow object."
   },
   {
     "id": "TC009",
     "title": "delete api workflows id delete workflow",
-    "description": "Test deleting a workflow by id to ensure the workflow is removed successfully."
+    "description": "Test deleting a workflow by its ID. Verify that the response includes success status and that the workflow is removed from the user's workflows."
   },
   {
     "id": "TC010",
     "title": "post api workflows id execute manually execute workflow",
-    "description": "Test manual execution of a workflow by id and verify execution status and details are returned."
+    "description": "Test manually triggering execution of a workflow by its ID. Verify that the response includes success status and an execution object detailing the execution status and results."
   }
 ]

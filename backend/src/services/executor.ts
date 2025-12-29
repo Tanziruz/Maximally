@@ -13,10 +13,12 @@ import {
   createStepExecution,
   updateStepExecution,
 } from './workflows.js';
-import nodemailer from 'nodemailer';
+import sgMail from '@sendgrid/mail';
 import dotenv from 'dotenv';
 
 dotenv.config();
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY || '');
 
 // Template engine for variable substitution
 function resolveTemplate(template: string, context: Record<string, any>): string {
@@ -126,47 +128,53 @@ async function executeSendEmail(
 ): Promise<any> {
   const resolvedConfig = resolveConfigTemplates(config, context) as SendEmailConfig;
 
-  const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: parseInt(process.env.SMTP_PORT || '587'),
-    secure: process.env.SMTP_PORT === '465',
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
-    },
-  });
+  // Prepare recipients
+  const to = Array.isArray(resolvedConfig.to) ? resolvedConfig.to : [resolvedConfig.to];
+  const cc = resolvedConfig.cc 
+    ? (Array.isArray(resolvedConfig.cc) ? resolvedConfig.cc : [resolvedConfig.cc])
+    : undefined;
+  const bcc = resolvedConfig.bcc
+    ? (Array.isArray(resolvedConfig.bcc) ? resolvedConfig.bcc : [resolvedConfig.bcc])
+    : undefined;
 
-  const mailOptions: nodemailer.SendMailOptions = {
-    from: process.env.SMTP_USER,
-    to: Array.isArray(resolvedConfig.to) ? resolvedConfig.to.join(', ') : resolvedConfig.to,
-    subject: resolvedConfig.subject,
+  // Ensure subject exists
+  const subject = resolvedConfig.subject?.trim() || 'No Subject';
+
+  // Send email using SendGrid
+  const emailOptions: any = {
+    from: process.env.EMAIL_FROM || 'noreply@yourdomain.com',
+    to,
+    subject,
   };
 
-  if (resolvedConfig.cc) {
-    mailOptions.cc = Array.isArray(resolvedConfig.cc) 
-      ? resolvedConfig.cc.join(', ') 
-      : resolvedConfig.cc;
+  if (cc && cc.length > 0) {
+    emailOptions.cc = cc;
   }
 
-  if (resolvedConfig.bcc) {
-    mailOptions.bcc = Array.isArray(resolvedConfig.bcc) 
-      ? resolvedConfig.bcc.join(', ') 
-      : resolvedConfig.bcc;
+  if (bcc && bcc.length > 0) {
+    emailOptions.bcc = bcc;
   }
 
   if (resolvedConfig.isHtml) {
-    mailOptions.html = resolvedConfig.body;
+    emailOptions.html = resolvedConfig.body;
   } else {
-    mailOptions.text = resolvedConfig.body;
+    emailOptions.text = resolvedConfig.body;
   }
 
-  const result = await transporter.sendMail(mailOptions);
-  
-  return {
-    messageId: result.messageId,
-    accepted: result.accepted,
-    rejected: result.rejected,
-  };
+  try {
+    const result = await sgMail.send(emailOptions);
+    return {
+      messageId: result[0]?.headers['x-message-id'],
+      success: true,
+    };
+  } catch (error: any) {
+    console.error('SendGrid API Error:', {
+      message: error.message,
+      code: error.code,
+      response: error.response?.body,
+    });
+    throw new Error(`Email sending failed: ${error.response?.body?.errors?.[0]?.message || error.message}`);
+  }
 }
 
 async function executeTransformData(
@@ -284,8 +292,16 @@ export async function executeWorkflow(
       });
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error);
+      const errorStack = error instanceof Error ? error.stack : '';
       hasError = true;
       errorMessage = `Step ${step.id} failed: ${errorMsg}`;
+
+      console.error(`❌ Step execution error:`, {
+        stepId: step.id,
+        stepType: step.type,
+        error: errorMsg,
+        stack: errorStack,
+      });
 
       await updateStepExecution(stepExecution.id, {
         status: 'failed',
