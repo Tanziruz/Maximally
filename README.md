@@ -11,6 +11,18 @@ Build workflow automations through natural conversation instead of technical con
 - **Reliable Execution**: Job queue with retries and error handling
 - **Execution History**: Track all workflow runs and their results
 
+## Recent Updates
+
+### December 2025
+
+- ✅ **Email Integration Fixed**: Migrated from Resend to SendGrid for reliable email delivery in workflow actions
+- ✅ **Vite Configuration**: Fixed WebSocket HMR configuration for improved development experience
+- ✅ **Authorization**: Implemented proper workflow ownership checks across all endpoints
+- ✅ **TestSprite Testing**: Completed comprehensive automated testing with 32 test cases
+- ✅ **Production Ready**: Backend and frontend services fully containerized and deployable
+
+See [FIXES_APPLIED.md](FIXES_APPLIED.md) for detailed test results and technical implementation notes.
+
 ## Tech Stack
 
 - **Frontend**: React 19, Tailwind CSS 4, Zustand
@@ -95,8 +107,8 @@ Build workflow automations through natural conversation instead of technical con
    ```env
    JWT_SECRET=your-secure-jwt-secret
    GEMINI_API_KEY=your-gemini-api-key
-   SMTP_USER=your-email@gmail.com
-   SMTP_PASS=your-app-password
+   SENDGRID_API_KEY=your-sendgrid-api-key
+   SENDGRID_FROM_EMAIL=verified-sender@yourdomain.com
    ```
 
 2. Build and start all services:
@@ -176,17 +188,17 @@ Build workflow automations through natural conversation instead of technical con
 
 ## Environment Variables
 
-| Variable         | Description                  | Default                |
-| ---------------- | ---------------------------- | ---------------------- |
-| `PORT`           | Backend server port          | 3001                   |
-| `DATABASE_URL`   | PostgreSQL connection string | -                      |
-| `REDIS_URL`      | Redis connection string      | redis://localhost:6379 |
-| `JWT_SECRET`     | Secret for JWT signing       | -                      |
-| `GEMINI_API_KEY` | Google Gemini API key        | -                      |
-| `SMTP_HOST`      | SMTP server host             | smtp.gmail.com         |
-| `SMTP_PORT`      | SMTP server port             | 587                    |
-| `SMTP_USER`      | SMTP username                | -                      |
-| `SMTP_PASS`      | SMTP password                | -                      |
+| Variable              | Description                  | Default                |
+| --------------------- | ---------------------------- | ---------------------- |
+| `PORT`                | Backend server port          | 3001                   |
+| `DATABASE_URL`        | PostgreSQL connection string | -                      |
+| `REDIS_URL`           | Redis connection string      | redis://localhost:6379 |
+| `JWT_SECRET`          | Secret for JWT signing       | -                      |
+| `GEMINI_API_KEY`      | Google Gemini API key        | -                      |
+| `SENDGRID_API_KEY`    | SendGrid API key for emails  | -                      |
+| `SENDGRID_FROM_EMAIL` | Verified sender email        | -                      |
+
+> **Note**: Email functionality now uses SendGrid instead of SMTP. Make sure to configure `SENDGRID_API_KEY` and verify your sender email in SendGrid.
 
 ## License
 

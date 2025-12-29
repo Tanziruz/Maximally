@@ -28,6 +28,7 @@ function resolveTemplate(template: string, context: Record<string, any>): string
     
     for (const key of keys) {
       if (value === undefined || value === null) {
+        console.log(`❌ Template resolution failed at key "${key}". Available keys:`, Object.keys(value || {}));
         return match; // Keep original if path not found
       }
       value = value[key];
@@ -103,7 +104,20 @@ async function executeHttpRequest(
       : JSON.stringify(resolvedConfig.body);
   }
 
-  const response = await fetch(resolvedConfig.url, fetchOptions);
+  console.log(`🌐 Making ${resolvedConfig.method} request to: ${resolvedConfig.url}`);
+  
+  let response;
+  try {
+    response = await fetch(resolvedConfig.url, fetchOptions);
+  } catch (error: any) {
+    console.error(`❌ HTTP Request failed:`, {
+      url: resolvedConfig.url,
+      method: resolvedConfig.method,
+      error: error.message,
+      cause: error.cause?.message,
+    });
+    throw error;
+  }
   
   let responseBody: any;
   const contentType = response.headers.get('content-type');
@@ -113,6 +127,8 @@ async function executeHttpRequest(
   } else {
     responseBody = await response.text();
   }
+
+  console.log(`✅ Response received: ${response.status} ${response.statusText}`);
 
   return {
     status: response.status,

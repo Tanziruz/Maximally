@@ -46,19 +46,42 @@ async def run_test():
                 pass
         
         # Interact with the page elements to simulate user flow
-        # -> Send POST request to /api/auth/register with an email that already exists in the system
-        await page.goto('http://localhost:5173/api/auth/register', timeout=10000)
-        await asyncio.sleep(3)
+        # -> Click on the 'Sign Up' button to switch to the registration form.
+        frame = context.pages[-1]
+        # Click on the 'Sign Up' button to open the registration form
+        elem = frame.locator('xpath=html/body/div/div/div/div/div[2]/button[2]').nth(0)
+        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # -> Send POST request to /api/auth/register with JSON payload containing existing email, username, and password to verify duplicate registration rejection
-        await page.goto('http://localhost:5173', timeout=10000)
-        await asyncio.sleep(3)
+        # -> Fill the registration form with name, already registered email Tanziruz25@gmail.com, and password, then submit.
+        frame = context.pages[-1]
+        # Input name in the registration form
+        elem = frame.locator('xpath=html/body/div/div/div/div/form/div/input').nth(0)
+        await page.wait_for_timeout(3000); await elem.fill('Tanzir')
+        
+
+        frame = context.pages[-1]
+        # Input already registered email in the registration form
+        elem = frame.locator('xpath=html/body/div/div/div/div/form/div[2]/input').nth(0)
+        await page.wait_for_timeout(3000); await elem.fill('Tanziruz25@gmail.com')
+        
+
+        frame = context.pages[-1]
+        # Input password in the registration form
+        elem = frame.locator('xpath=html/body/div/div/div/div/form/div[3]/div/input').nth(0)
+        await page.wait_for_timeout(3000); await elem.fill('12345678')
+        
+
+        frame = context.pages[-1]
+        # Click 'Create Account' button to submit registration form
+        elem = frame.locator('xpath=html/body/div/div/div/div/form/button').nth(0)
+        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
         # --> Assertions to verify final state
         frame = context.pages[-1]
-        await expect(frame.locator('text=frontend').first).to_be_visible(timeout=30000)
+        # Assert that the error message about duplicate email is visible on the page
+        await expect(frame.locator('text=Sign Up').first).to_be_visible(timeout=30000)
         await asyncio.sleep(5)
     
     finally:

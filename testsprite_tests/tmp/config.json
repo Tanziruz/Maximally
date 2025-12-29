@@ -1,10 +1,10 @@
 {
   "status": "commited",
-  "type": "backend",
+  "type": "frontend",
   "scope": "codebase",
-  "localEndpoint": "http://localhost:3001",
-  "backendAuthType": "Bearer token",
-  "backendCredential": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1NWVlMDA5OS0wNGU3LTQ2ZGYtODFlZC03ZTlhOTEzYTZmYzUiLCJlbWFpbCI6IlRhbnppcnV6MjVAZ21haWwuY29tIiwiaWF0IjoxNzY3MDA3Njg3LCJleHAiOjE3Njc2MTI0ODd9.PpmhOqjErdNprROET1LwviTjGE4oN0IWoo5cP-CvAos",
+  "localEndpoint": "http://localhost:5173",
+  "loginUser": "Tanziruz25@gmail.com",
+  "loginPassword": "12345678",
   "executionArgs": {
     "projectName": "Maximally",
     "projectPath": "d:\\Project\\Maximally",
@@ -14,5 +14,5 @@
       "API_KEY": "sk-user-k1PnaaIsshdGnsL5A7ybFy-VYY_1ZqwjzB7_2m24K2XP5QQg381pJ3E8JShEj1UwWe11LHH4zY1_aJN84gIBuFuzmPuCqBbXyHrj8ALGSa0-BfrXROJcmDNzuiTqiLmTv0s"
     }
   },
-  "proxy": "http://f18cc903-b2fe-4494-a9a5-64b4b4090c30:0ifJsCtP6b660sUudBEqGsTHtF9ZA047@tun.testsprite.com:8080"
+  "proxy": "http://0edd94e7-becb-475e-805d-0c461bc126d9:YXx5qA7T6jVANhndtFGn2Sd1GJZngKWY@tun.testsprite.com:8080"
 }

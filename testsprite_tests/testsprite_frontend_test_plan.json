@@ -1,597 +1,498 @@
 [
   {
     "id": "TC001",
-    "title": "User Registration Success",
-    "description": "Verify that a user can successfully register with a valid email and password",
+    "title": "User Registration with Valid Data",
+    "description": "Verify that a user can register successfully with valid email and password.",
     "category": "functional",
     "priority": "High",
     "steps": [
       {
         "type": "action",
-        "description": "Send POST request to /api/auth/register with valid name, email, and password"
+        "description": "Send POST request to /api/auth/register with valid name, email, and password."
       },
       {
         "type": "assertion",
-        "description": "Check response success is true and user object and JWT token are returned"
+        "description": "Response success is true, user object is returned with id and email, and JWT token is issued."
       },
       {
         "type": "assertion",
-        "description": "Verify password is stored hashed in the database (bcrypt)"
+        "description": "Check password is hashed in the database, not stored in plain text."
       }
     ]
   },
   {
     "id": "TC002",
     "title": "User Registration with Existing Email",
-    "description": "Verify user cannot register with an email that is already in use",
+    "description": "Verify that registration fails if the email is already registered.",
     "category": "error handling",
     "priority": "High",
     "steps": [
       {
         "type": "action",
-        "description": "Send POST request to /api/auth/register with an email that already exists in the system"
+        "description": "Send POST request to /api/auth/register with an email that already exists in the system."
       },
       {
         "type": "assertion",
-        "description": "Check response indicates failure and proper error message is returned"
+        "description": "Response success is false and proper error message about duplicate email is returned."
       }
     ]
   },
   {
     "id": "TC003",
-    "title": "User Login Success",
-    "description": "Check login is successful with correct email and password and JWT token is issued",
+    "title": "User Login with Valid Credentials",
+    "description": "Verify user can login successfully with correct email and password and receives a valid JWT token.",
     "category": "functional",
     "priority": "High",
     "steps": [
       {
         "type": "action",
-        "description": "Send POST request to /api/auth/login with valid email and password"
+        "description": "Send POST request to /api/auth/login with valid email and password."
       },
       {
         "type": "assertion",
-        "description": "Verify response success is true and user object and JWT token are returned"
+        "description": "Response success is true, user object is returned, and JWT token is issued."
       }
     ]
   },
   {
     "id": "TC004",
-    "title": "User Login Failure Incorrect Password",
-    "description": "Verify login is rejected with incorrect password",
+    "title": "User Login with Invalid Credentials",
+    "description": "Verify login fails with incorrect email or password.",
     "category": "error handling",
     "priority": "High",
     "steps": [
       {
         "type": "action",
-        "description": "Send POST request to /api/auth/login with valid email and incorrect password"
+        "description": "Send POST request to /api/auth/login with invalid email or password."
       },
       {
         "type": "assertion",
-        "description": "Verify response success is false and appropriate error message is returned"
+        "description": "Response success is false and error message indicating invalid credentials is returned."
       }
     ]
   },
   {
     "id": "TC005",
     "title": "Access Protected Route with Valid JWT",
-    "description": "Verify access to protected routes is allowed with valid JWT token",
+    "description": "Verify that accessing a protected endpoint with valid JWT token succeeds.",
     "category": "security",
     "priority": "High",
     "steps": [
       {
         "type": "action",
-        "description": "Authenticate and obtain valid JWT token"
+        "description": "Login user and obtain a valid JWT token."
       },
       {
         "type": "action",
-        "description": "Send GET request to /api/auth/me with Authorization header containing valid JWT token"
+        "description": "Send GET request to /api/auth/me with Authorization header containing valid JWT token."
       },
       {
         "type": "assertion",
-        "description": "Verify response success is true and user object is returned"
+        "description": "Response success is true and correct user object is returned."
       }
     ]
   },
   {
     "id": "TC006",
-    "title": "Access Protected Route with Invalid JWT",
-    "description": "Verify access to protected routes is denied with invalid or missing JWT token",
+    "title": "Access Protected Route with Invalid or Missing JWT",
+    "description": "Verify that accessing a protected endpoint without or with invalid JWT token fails.",
     "category": "security",
     "priority": "High",
     "steps": [
       {
         "type": "action",
-        "description": "Send GET request to /api/auth/me with invalid or no Authorization header"
+        "description": "Send GET request to /api/auth/me with no Authorization header."
       },
       {
         "type": "assertion",
-        "description": "Verify response is unauthorized or error status code is returned"
+        "description": "Response is 401 Unauthorized."
+      },
+      {
+        "type": "action",
+        "description": "Send GET request to /api/auth/me with invalid or expired JWT token."
+      },
+      {
+        "type": "assertion",
+        "description": "Response is 401 Unauthorized."
       }
     ]
   },
   {
     "id": "TC007",
-    "title": "Send Message to AI Chat and Receive Workflow",
-    "description": "Validate the AI Chat interface generates workflow definitions and returns conversationId",
+    "title": "Send Message to AI Chat and Receive Workflow Draft",
+    "description": "Verify that user can send message to /api/chat and AI returns a conversation response and optionally a workflow draft.",
     "category": "functional",
     "priority": "High",
     "steps": [
       {
         "type": "action",
-        "description": "Send POST request to /api/chat with a valid message describing a workflow"
+        "description": "Send POST request to /api/chat with a valid message."
       },
       {
         "type": "assertion",
-        "description": "Verify response success is true and contains conversationId, AI response text, and a workflow object"
+        "description": "Response success is true, conversationId is returned, AI response text is returned, and optionally a workflow object draft is present."
       },
       {
         "type": "assertion",
-        "description": "Verify conversation history is stored and updated for the user"
+        "description": "Verify conversation history is stored and updated for the user."
       }
     ]
   },
   {
     "id": "TC008",
-    "title": "Send Message Without ConversationId",
-    "description": "Send message without conversationId to start a new conversation and get initial workflow draft",
+    "title": "Retrieve All Workflows for Authenticated User",
+    "description": "Verify that user can fetch a list of all workflows they own via /api/workflows.",
     "category": "functional",
-    "priority": "Medium",
+    "priority": "High",
     "steps": [
       {
         "type": "action",
-        "description": "Send POST request to /api/chat with only message field"
+        "description": "Send authenticated GET request to /api/workflows."
       },
       {
         "type": "assertion",
-        "description": "Verify response returns a new conversationId and workflow draft if applicable"
+        "description": "Response success is true and an array of workflow objects belonging to the user is returned."
       }
     ]
   },
   {
     "id": "TC009",
-    "title": "Retrieve User's Workflows",
-    "description": "Verify user can retrieve a list of all their workflows",
+    "title": "Create New Workflow with Valid Data",
+    "description": "Verify that authenticated user can create a new workflow with valid trigger and steps.",
     "category": "functional",
     "priority": "High",
     "steps": [
       {
         "type": "action",
-        "description": "Authenticate and send GET request to /api/workflows"
+        "description": "Send authenticated POST request to /api/workflows with valid name, description, trigger (e.g. cron), and steps array."
       },
       {
         "type": "assertion",
-        "description": "Verify response success is true and workflows array contains workflows belonging to user"
+        "description": "Response success is true and workflow object is returned with correct data."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify workflow is stored in database linked to the user."
       }
     ]
   },
   {
     "id": "TC010",
-    "title": "Create New Workflow",
-    "description": "Validate user can create a new workflow with valid trigger and steps",
+    "title": "Retrieve Specific Workflow by ID",
+    "description": "Verify that user can fetch the details of a specific workflow by ID if it belongs to them.",
     "category": "functional",
     "priority": "High",
     "steps": [
       {
         "type": "action",
-        "description": "Send POST request to /api/workflows with name, description, trigger object, and steps array"
+        "description": "Send authenticated GET request to /api/workflows/:id with a valid workflow ID."
       },
       {
         "type": "assertion",
-        "description": "Verify response success is true and workflow object is returned with correct details"
+        "description": "Response success is true and the workflow object details are returned."
+      },
+      {
+        "type": "action",
+        "description": "Send GET request with invalid or non-existent workflow ID."
+      },
+      {
+        "type": "assertion",
+        "description": "Response indicates workflow not found or access forbidden."
       }
     ]
   },
   {
     "id": "TC011",
-    "title": "Create Workflow with Invalid Trigger",
-    "description": "Verify workflow creation fails with invalid or missing trigger object",
-    "category": "error handling",
+    "title": "Update Workflow Partially and Fully",
+    "description": "Verify that user can update the workflow's name, description, trigger, steps, and enabled flag via PUT /api/workflows/:id.",
+    "category": "functional",
     "priority": "High",
     "steps": [
       {
         "type": "action",
-        "description": "Send POST request to /api/workflows with missing or malformed trigger"
+        "description": "Send authenticated PUT request to /api/workflows/:id with partial fields e.g. only enabled flag changed."
       },
       {
         "type": "assertion",
-        "description": "Verify response indicates failure with proper validation errors"
+        "description": "Response success is true and workflow object reflects updated data."
+      },
+      {
+        "type": "action",
+        "description": "Send PUT request with full update of all fields."
+      },
+      {
+        "type": "assertion",
+        "description": "Response success is true and database reflects all updated fields."
+      },
+      {
+        "type": "action",
+        "description": "Send PUT request with invalid or malformed data."
+      },
+      {
+        "type": "assertion",
+        "description": "Response contains validation errors and update is rejected."
       }
     ]
   },
   {
     "id": "TC012",
-    "title": "View Specific Workflow by ID",
-    "description": "Verify the user can retrieve details of an existing workflow by its ID",
+    "title": "Delete Workflow Successfully",
+    "description": "Verify that authenticated user can delete their workflow with DELETE /api/workflows/:id.",
     "category": "functional",
     "priority": "High",
     "steps": [
       {
         "type": "action",
-        "description": "Send GET request to /api/workflows/:id with a valid workflow ID belonging to user"
+        "description": "Send authenticated DELETE request to /api/workflows/:id with valid workflow ID."
       },
       {
         "type": "assertion",
-        "description": "Verify response success is true and workflow details are returned"
+        "description": "Response success is true and workflow is removed from database."
+      },
+      {
+        "type": "action",
+        "description": "Send DELETE request with invalid or unauthorized workflow ID."
+      },
+      {
+        "type": "assertion",
+        "description": "Response indicates failure or access denied."
       }
     ]
   },
   {
     "id": "TC013",
-    "title": "View Specific Workflow Not Owned by User",
-    "description": "Verify access is denied when requesting workflow details not belonging to the user",
-    "category": "security",
+    "title": "Manual Workflow Execution Trigger",
+    "description": "Verify that user can manually trigger execution of a workflow via POST /api/workflows/:id/execute and execution history records are created.",
+    "category": "functional",
     "priority": "High",
     "steps": [
       {
         "type": "action",
-        "description": "Send GET request to /api/workflows/:id with a valid workflow ID not owned by the user"
+        "description": "Send authenticated POST request to /api/workflows/:id/execute with valid workflow ID."
       },
       {
         "type": "assertion",
-        "description": "Verify response indicates unauthorized or not found"
+        "description": "Response success is true and execution object is returned with status, started_at timestamp."
+      },
+      {
+        "type": "assertion",
+        "description": "Execution history is recorded in database for the workflow execution."
       }
     ]
   },
   {
     "id": "TC014",
-    "title": "Update Workflow Configuration",
-    "description": "Verify user can update workflow's name, description, trigger, steps, and enabled status",
+    "title": "Webhook Trigger Workflow Execution",
+    "description": "Verify that sending HTTP requests to the unique webhook URL triggers workflow execution and passes payload correctly.",
     "category": "functional",
     "priority": "High",
     "steps": [
       {
         "type": "action",
-        "description": "Send PUT request to /api/workflows/:id with updated fields"
+        "description": "Send HTTP POST request to /api/webhooks/:workflowId with valid payload."
       },
       {
         "type": "assertion",
-        "description": "Verify response success is true and workflow is updated with new values"
+        "description": "Response success is true and execution object is returned."
+      },
+      {
+        "type": "assertion",
+        "description": "Payload from webhook is passed correctly as trigger_data in execution record."
+      },
+      {
+        "type": "action",
+        "description": "Send webhook requests with different HTTP methods (GET, POST, PUT, DELETE) as supported."
+      },
+      {
+        "type": "assertion",
+        "description": "Workflow triggers accordingly if the method is supported."
       }
     ]
   },
   {
     "id": "TC015",
-    "title": "Update Workflow with Invalid Data",
-    "description": "Verify update fails when provided invalid trigger or step configurations",
-    "category": "error handling",
-    "priority": "Medium",
+    "title": "Workflow Execution of Various Action Types",
+    "description": "Verify execution supports HTTP request, email sending, data transformation, conditional logic, delay actions, and correctly tracks step results.",
+    "category": "integration",
+    "priority": "High",
     "steps": [
       {
         "type": "action",
-        "description": "Send PUT request to /api/workflows/:id with invalid trigger or steps"
+        "description": "Create workflow with mixed action steps including HTTP request, send email, data transformation, conditional logic, and delay."
+      },
+      {
+        "type": "action",
+        "description": "Trigger workflow execution manually."
       },
       {
         "type": "assertion",
-        "description": "Verify error response is returned indicating validation failure"
+        "description": "Each step executes successfully, step results are recorded correctly."
+      },
+      {
+        "type": "assertion",
+        "description": "Conditional logic correctly evaluates and executes respective branches."
+      },
+      {
+        "type": "assertion",
+        "description": "Delays are honored for delay steps."
+      },
+      {
+        "type": "assertion",
+        "description": "HTTP requests and emails are sent as specified (mocking external services)."
       }
     ]
   },
   {
     "id": "TC016",
-    "title": "Delete Workflow",
-    "description": "Verify user can delete their workflow successfully",
-    "category": "functional",
+    "title": "Workflow Execution Retry on Failure",
+    "description": "Verify that failed workflow executions are retried according to retry policy and failures are logged.",
+    "category": "error handling",
     "priority": "High",
     "steps": [
       {
         "type": "action",
-        "description": "Send DELETE request to /api/workflows/:id with valid workflow ID"
+        "description": "Create workflow with step designed to fail (e.g., HTTP request to invalid URL)."
+      },
+      {
+        "type": "action",
+        "description": "Execute workflow manually."
       },
       {
         "type": "assertion",
-        "description": "Verify response success is true and workflow no longer exists"
+        "description": "Execution fails initially but retries happen as configured."
+      },
+      {
+        "type": "assertion",
+        "description": "Error messages are logged in execution history."
       }
     ]
   },
   {
     "id": "TC017",
-    "title": "Delete Workflow Not Owned by User",
-    "description": "Verify deletion is forbidden when attempting to delete workflows not owned",
-    "category": "security",
+    "title": "Data Validation on Workflow Creation and Updates",
+    "description": "Verify that workflow creation and updates reject invalid data such as missing required fields, invalid cron expressions, or bad step definitions.",
+    "category": "error handling",
     "priority": "High",
     "steps": [
       {
         "type": "action",
-        "description": "Send DELETE request to /api/workflows/:id where workflow belongs to another user"
+        "description": "Send POST /api/workflows with missing name or invalid trigger."
       },
       {
         "type": "assertion",
-        "description": "Verify response indicates unauthorized or forbidden"
+        "description": "Response contains validation error and creation fails."
+      },
+      {
+        "type": "action",
+        "description": "Send PUT /api/workflows/:id with invalid steps data or malformed JSON."
+      },
+      {
+        "type": "assertion",
+        "description": "Response contains validation error and update fails."
       }
     ]
   },
   {
     "id": "TC018",
-    "title": "Enable and Disable Workflows",
-    "description": "Verify user can enable or disable workflow automations via update endpoint",
+    "title": "Conversation History Storage and Retrieval",
+    "description": "Verify that each AI chat conversation is stored per user and that conversationMessages and workflow drafts update accordingly.",
     "category": "functional",
     "priority": "Medium",
     "steps": [
       {
         "type": "action",
-        "description": "Send PUT request to /api/workflows/:id setting enabled to false"
+        "description": "Send multiple POST /api/chat requests to simulate conversation."
       },
       {
         "type": "assertion",
-        "description": "Verify workflow's enabled status is updated to false"
-      },
-      {
-        "type": "action",
-        "description": "Send PUT request to /api/workflows/:id setting enabled to true"
+        "description": "Verify conversation messages accumulate correctly in conversations table."
       },
       {
         "type": "assertion",
-        "description": "Verify workflow's enabled status is updated to true"
+        "description": "Verify workflow_draft field updates based on AI generated workflows."
       }
     ]
   },
   {
     "id": "TC019",
-    "title": "Manually Execute Workflow",
-    "description": "Verify user can manually trigger execution of a workflow and receive execution result",
+    "title": "Enable and Disable Workflows",
+    "description": "Verify users can enable or disable workflows and that disabled workflows do not trigger execution.",
     "category": "functional",
-    "priority": "High",
+    "priority": "Medium",
     "steps": [
       {
         "type": "action",
-        "description": "Send POST request to /api/workflows/:id/execute for an enabled workflow"
+        "description": "Update workflow enabled flag to false."
       },
       {
         "type": "assertion",
-        "description": "Verify response success is true and execution object is returned"
+        "description": "Workflow record updated with enabled false."
+      },
+      {
+        "type": "action",
+        "description": "Trigger workflow execution by schedule or webhook."
       },
       {
         "type": "assertion",
-        "description": "Check that execution history is recorded in the database"
+        "description": "Verify workflow does not execute when disabled."
+      },
+      {
+        "type": "action",
+        "description": "Re-enable workflow."
+      },
+      {
+        "type": "assertion",
+        "description": "Workflow executes normally after being enabled."
       }
     ]
   },
   {
     "id": "TC020",
-    "title": "Execute Workflow with All Supported Actions",
-    "description": "Verify workflow executes steps including HTTP requests, emails, data transformations, conditions, delays, and retries",
-    "category": "functional",
+    "title": "Security: Password Hashing Verification",
+    "description": "Verify that passwords are hashed using bcrypt and plain passwords are not stored in the database.",
+    "category": "security",
     "priority": "High",
     "steps": [
       {
         "type": "action",
-        "description": "Create or use a workflow containing schedule trigger with steps: HTTP request, send email, data transform, conditional logic, delay, and retry failed execution"
-      },
-      {
-        "type": "action",
-        "description": "Trigger workflow execution manually or via trigger"
+        "description": "Register a new user with known password."
       },
       {
         "type": "assertion",
-        "description": "Verify all steps are executed in order and outputs are as expected"
+        "description": "Check database record for password_hash does not equal the plain password."
       },
       {
         "type": "assertion",
-        "description": "Verify failed retries occur and execution history accurately reflects attempts"
+        "description": "password_hash matches bcrypt hash format."
       }
     ]
   },
   {
     "id": "TC021",
-    "title": "Trigger Workflow via Schedule (Cron)",
-    "description": "Verify workflows trigger and execute based on cron schedule expressions",
-    "category": "functional",
-    "priority": "High",
-    "steps": [
-      {
-        "type": "action",
-        "description": "Set workflow trigger to a cron expression"
-      },
-      {
-        "type": "action",
-        "description": "Wait or simulate trigger time and observe workflow execution"
-      },
-      {
-        "type": "assertion",
-        "description": "Check workflow execution starts at the scheduled time"
-      }
-    ]
-  },
-  {
-    "id": "TC022",
-    "title": "Trigger Workflow via Webhook",
-    "description": "Verify triggering workflow execution by sending requests to unique webhook URLs",
-    "category": "functional",
-    "priority": "High",
-    "steps": [
-      {
-        "type": "action",
-        "description": "Obtain unique webhook URL for workflow"
-      },
-      {
-        "type": "action",
-        "description": "Send HTTP requests using supported methods (POST, GET, etc.) with payloads to webhook URL"
-      },
-      {
-        "type": "assertion",
-        "description": "Verify workflow execution is triggered and payload is passed to workflow steps correctly"
-      }
-    ]
-  },
-  {
-    "id": "TC023",
-    "title": "Webhook Endpoint Invalid Workflow ID",
-    "description": "Verify webhook requests to invalid or non-existing workflow IDs return error",
-    "category": "error handling",
-    "priority": "Medium",
-    "steps": [
-      {
-        "type": "action",
-        "description": "Send POST request to /api/webhooks/:workflowId with invalid or non-existent workflowId"
-      },
-      {
-        "type": "assertion",
-        "description": "Verify response indicates failure or not found error"
-      }
-    ]
-  },
-  {
-    "id": "TC024",
-    "title": "Conversation History Storage and Retrieval",
-    "description": "Verify user conversation history is stored and updated with each AI chat message",
-    "category": "functional",
-    "priority": "Medium",
-    "steps": [
-      {
-        "type": "action",
-        "description": "Send multiple chat messages via /api/chat using same conversationId"
-      },
-      {
-        "type": "assertion",
-        "description": "Verify conversation messages accumulate and workflow drafts are updated in database"
-      }
-    ]
-  },
-  {
-    "id": "TC025",
-    "title": "Real-Time Workflow Preview Update",
-    "description": "Verify workflow preview updates in real-time as user chats with the AI",
-    "category": "functional",
-    "priority": "Medium",
-    "steps": [
-      {
-        "type": "action",
-        "description": "Send a sequence of workflow-related messages to /api/chat"
-      },
-      {
-        "type": "assertion",
-        "description": "Verify workflow object in response reflects incremental updates corresponding to conversation"
-      }
-    ]
-  },
-  {
-    "id": "TC026",
-    "title": "JWT Token Expiry Handling",
-    "description": "Verify access with expired JWT token is denied and proper error returned",
-    "category": "security",
-    "priority": "High",
-    "steps": [
-      {
-        "type": "action",
-        "description": "Use an expired JWT token to access a protected route"
-      },
-      {
-        "type": "assertion",
-        "description": "Verify response indicates token expired or unauthorized access"
-      }
-    ]
-  },
-  {
-    "id": "TC027",
-    "title": "Password Hashing Verification",
-    "description": "Verify passwords are not stored in plain text and are hashed with bcrypt upon registration",
-    "category": "security",
-    "priority": "High",
-    "steps": [
-      {
-        "type": "action",
-        "description": "Register a new user with known password"
-      },
-      {
-        "type": "assertion",
-        "description": "Check stored password_hash in users table is bcrypt hash and not equal to the plain password"
-      }
-    ]
-  },
-  {
-    "id": "TC028",
     "title": "Workflow Execution History Tracking",
-    "description": "Verify every workflow execution is logged with status, trigger data, step results, errors, and timestamps",
+    "description": "Verify that each execution of a workflow creates a workflow_executions record with statuses, timestamps, trigger data, step results, and errors if any.",
     "category": "functional",
     "priority": "High",
     "steps": [
       {
         "type": "action",
-        "description": "Trigger execution of a workflow manually or via triggers"
+        "description": "Trigger workflow execution manually or through webhook."
       },
       {
         "type": "assertion",
-        "description": "Verify workflow_executions table contains completed record with accurate and complete data"
-      }
-    ]
-  },
-  {
-    "id": "TC029",
-    "title": "Data Transformation Actions within Workflows",
-    "description": "Verify data transformation steps perform expected operations correctly during workflow execution",
-    "category": "functional",
-    "priority": "Medium",
-    "steps": [
-      {
-        "type": "action",
-        "description": "Create a workflow with data transformation step"
-      },
-      {
-        "type": "action",
-        "description": "Trigger workflow and observe transformation outputs"
+        "description": "workflow_executions table contains new record with proper workflow_id, status (e.g., started, succeeded, failed), started_at and completed_at timestamps."
       },
       {
         "type": "assertion",
-        "description": "Verify the step output matches defined transformation rules"
-      }
-    ]
-  },
-  {
-    "id": "TC030",
-    "title": "Conditional Logic Step Execution",
-    "description": "Verify workflow correctly evaluates condition steps and proceeds accordingly",
-    "category": "functional",
-    "priority": "Medium",
-    "steps": [
-      {
-        "type": "action",
-        "description": "Create workflow with conditional logic step branching into different next steps"
-      },
-      {
-        "type": "action",
-        "description": "Trigger workflow with input data producing both true and false conditions"
+        "description": "trigger_data contains relevant payload."
       },
       {
         "type": "assertion",
-        "description": "Verify workflow branches execute as expected based on condition evaluation"
-      }
-    ]
-  },
-  {
-    "id": "TC031",
-    "title": "Delay Action in Workflow",
-    "description": "Verify workflow delay steps pause execution for specified time before continuing",
-    "category": "functional",
-    "priority": "Medium",
-    "steps": [
-      {
-        "type": "action",
-        "description": "Create workflow including a delay step with defined duration"
-      },
-      {
-        "type": "action",
-        "description": "Trigger workflow execution"
+        "description": "step_results contain detailed outcomes of each workflow step."
       },
       {
         "type": "assertion",
-        "description": "Verify delay occurs for correct time before next steps execute"
-      }
-    ]
-  },
-  {
-    "id": "TC032",
-    "title": "Webhook Payload Support for Different HTTP Methods",
-    "description": "Verify webhooks accept and correctly handle different HTTP methods like GET, POST",
-    "category": "functional",
-    "priority": "Medium",
-    "steps": [
-      {
-        "type": "action",
-        "description": "Send requests with different HTTP methods (GET, POST, PUT where supported) to webhook URL"
-      },
-      {
-        "type": "assertion",
-        "description": "Verify workflow execution triggers and payloads are received appropriately"
+        "description": "error field contains error details if execution fails."
       }
     ]
   }

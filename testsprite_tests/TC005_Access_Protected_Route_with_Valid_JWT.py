@@ -46,27 +46,34 @@ async def run_test():
                 pass
         
         # Interact with the page elements to simulate user flow
-        # -> Authenticate and obtain valid JWT token via API call using provided credentials
-        await page.goto('http://localhost:5173/api/auth/login', timeout=10000)
-        await asyncio.sleep(3)
+        # -> Input email and password, then click Sign In button to login and obtain JWT token.
+        frame = context.pages[-1]
+        # Input email address
+        elem = frame.locator('xpath=html/body/div/div/div/div/form/div/input').nth(0)
+        await page.wait_for_timeout(3000); await elem.fill('Tanziruz25@gmail.com')
         
 
-        # -> Send POST request to /api/auth/login with username and password to obtain JWT token
-        await page.goto('http://localhost:5173/api/auth/login', timeout=10000)
-        await asyncio.sleep(3)
+        frame = context.pages[-1]
+        # Input password
+        elem = frame.locator('xpath=html/body/div/div/div/div/form/div[2]/div/input').nth(0)
+        await page.wait_for_timeout(3000); await elem.fill('12345678')
         
 
-        # -> Send POST request to /api/auth/login with username and password to obtain JWT token
-        await page.goto('http://localhost:5173/api/auth/login', timeout=10000)
+        frame = context.pages[-1]
+        # Click Sign In button to submit login form
+        elem = frame.locator('xpath=html/body/div/div/div/div/form/button').nth(0)
+        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
+        
+
+        # -> Send GET request to /api/auth/me with Authorization header containing valid JWT token.
+        await page.goto('http://localhost:5173/api/auth/me', timeout=10000)
         await asyncio.sleep(3)
         
 
         # --> Assertions to verify final state
         frame = context.pages[-1]
-        try:
-            await expect(frame.locator('text=Access Granted to Protected Route').first).to_be_visible(timeout=30000)
-        except AssertionError:
-            raise AssertionError('Test case failed: Access to protected routes with valid JWT token was not verified successfully as expected.')
+        await expect(frame.locator('text=Tanziruz').first).to_be_visible(timeout=30000)
+        await expect(frame.locator('text=Tanziruz25@gmail.com').first).to_be_visible(timeout=30000)
         await asyncio.sleep(5)
     
     finally:

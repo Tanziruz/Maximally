@@ -50,9 +50,24 @@ When you have enough information to create a workflow, include a JSON block in y
 
 DATA TEMPLATING:
 Steps can reference data from previous steps using template syntax:
-- {{trigger.data}} - Data from the trigger
-- {{step_1.response}} - Response from step with id "step_1"
-- {{step_1.response.body.items}} - Nested data access
+- {{trigger.data}} - Data from webhook trigger
+- {{step_id.body}} - Response body from HTTP request with id "step_id"
+- {{step_id.body.field}} - Access nested fields in JSON responses
+- {{step_id.status}} - HTTP status code from request
+- {{step_id.headers}} - Response headers
+
+IMPORTANT: HTTP responses are stored as:
+{
+  "step_id": {
+    "status": 200,
+    "statusText": "OK", 
+    "headers": {...},
+    "body": <parsed response>
+  }
+}
+
+For plain text responses, {{step_id.body}} returns the text directly.
+For JSON responses, body is already parsed - use {{step_id.body.fieldName}}.
 
 EXAMPLE WORKFLOW:
 For "Send me an email every Monday with weather data":
@@ -65,22 +80,31 @@ For "Send me an email every Monday with weather data":
   },
   "steps": [
     {
-      "id": "step_1",
-      "name": "Get Weather Data",
+      "id": "get_temperature",
+      "name": "Get Temperature",
       "type": "http_request",
       "config": {
         "method": "GET",
-        "url": "https://api.open-meteo.com/v1/forecast?latitude=40.71&longitude=-74.01&current_weather=true"
+        "url": "https://wttr.in/London?format=%t"
       }
     },
     {
-      "id": "step_2",
+      "id": "get_conditions",
+      "name": "Get Weather Conditions",
+      "type": "http_request",
+      "config": {
+        "method": "GET",
+        "url": "https://wttr.in/London?format=%C"
+      }
+    },
+    {
+      "id": "send_weather_email",
       "name": "Send Weather Email",
       "type": "send_email",
       "config": {
         "to": "user@example.com",
         "subject": "Weekly Weather Update",
-        "body": "Current temperature: {{step_1.response.current_weather.temperature}}°C",
+        "body": "Temperature: {{get_temperature.body}}, Conditions: {{get_conditions.body}}",
         "isHtml": false
       }
     }
@@ -93,9 +117,15 @@ IMPORTANT RULES:
 2. HTTP URLs must be complete and valid
 3. Each step must have a unique id
 4. Reference previous step data correctly using template syntax
-5. Be helpful and guide the user through the process
-6. If the user's request is unclear, ask specific questions
-7. Suggest improvements or best practices when appropriate`;
+5. FOR WEATHER: Always use wttr.in with simple format codes (NO JSON):
+   - Temperature: https://wttr.in/{city}?format=%t (returns "15°C")
+   - Conditions: https://wttr.in/{city}?format=%C (returns "Clear")
+   - Wind: https://wttr.in/{city}?format=%w (returns "10 km/h")
+   Then use {{step_id.body}} directly in email (already formatted)
+6. For other APIs, if JSON structure is unknown, prefer simple text endpoints
+7. Be helpful and guide the user through the process
+8. If the user's request is unclear, ask specific questions
+9. Suggest improvements or best practices when appropriate`;
 
 export async function generateWorkflowResponse(
   messages: ConversationMessage[],
