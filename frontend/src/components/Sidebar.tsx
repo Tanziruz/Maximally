@@ -31,7 +31,7 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
             <Zap className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h1 className="font-bold text-lg">FlowBuilder</h1>
+            <h1 className="font-bold text-lg">AutoFlow</h1>
             <p className="text-xs text-gray-400">AI Automation</p>
           </div>
         </div>
