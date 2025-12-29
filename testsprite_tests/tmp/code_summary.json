@@ -1,0 +1,105 @@
+{
+  "tech_stack": [
+    "TypeScript",
+    "Node.js",
+    "Express.js",
+    "React 19",
+    "PostgreSQL",
+    "Redis",
+    "BullMQ",
+    "Google Gemini AI",
+    "Vite",
+    "Tailwind CSS 4",
+    "Zustand",
+    "Docker"
+  ],
+  "features": [
+    {
+      "name": "User Authentication",
+      "description": "JWT-based authentication system with user registration and login",
+      "files": [
+        "backend/src/routes/auth.ts",
+        "backend/src/services/auth.ts",
+        "backend/src/middleware/auth.ts",
+        "frontend/src/components/AuthForm.tsx"
+      ]
+    },
+    {
+      "name": "AI Chat Interface",
+      "description": "Conversational interface for building workflows using natural language with Google Gemini AI",
+      "files": [
+        "backend/src/routes/chat.ts",
+        "backend/src/services/gemini.ts",
+        "backend/src/services/conversations.ts",
+        "frontend/src/components/ChatInterface.tsx"
+      ]
+    },
+    {
+      "name": "Workflow Management",
+      "description": "Create, read, update, delete, and manage automation workflows",
+      "files": [
+        "backend/src/routes/workflows.ts",
+        "backend/src/services/workflows.ts",
+        "frontend/src/components/WorkflowsList.tsx",
+        "frontend/src/components/WorkflowPreview.tsx"
+      ]
+    },
+    {
+      "name": "Workflow Execution Engine",
+      "description": "Execute workflow steps including HTTP requests, email sending, data transformation, conditionals, and delays",
+      "files": [
+        "backend/src/services/executor.ts",
+        "backend/src/worker.ts"
+      ]
+    },
+    {
+      "name": "Webhook System",
+      "description": "Receive and process webhook triggers for workflows",
+      "files": [
+        "backend/src/routes/webhooks.ts"
+      ]
+    },
+    {
+      "name": "Job Queue System",
+      "description": "Background job processing with Redis and BullMQ for reliable workflow execution",
+      "files": [
+        "backend/src/lib/queue.ts",
+        "backend/src/lib/redis.ts",
+        "backend/src/worker.ts"
+      ]
+    },
+    {
+      "name": "Database Management",
+      "description": "PostgreSQL database connection and migrations",
+      "files": [
+        "backend/src/db/index.ts",
+        "backend/src/db/migrate.ts"
+      ]
+    },
+    {
+      "name": "Frontend State Management",
+      "description": "Zustand-based global state for authentication and application state",
+      "files": [
+        "frontend/src/stores/index.ts"
+      ]
+    },
+    {
+      "name": "API Client",
+      "description": "Frontend API communication layer",
+      "files": [
+        "frontend/src/lib/api.ts"
+      ]
+    },
+    {
+      "name": "UI Components",
+      "description": "React components for sidebar, workflow preview, and user interface",
+      "files": [
+        "frontend/src/components/Sidebar.tsx",
+        "frontend/src/components/WorkflowPreview.tsx",
+        "frontend/src/components/WorkflowsList.tsx",
+        "frontend/src/components/AuthForm.tsx",
+        "frontend/src/components/ChatInterface.tsx"
+      ]
+    }
+  ]
+}

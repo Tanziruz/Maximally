@@ -1,0 +1,52 @@
+[
+  {
+    "id": "TC001",
+    "title": "post api auth register user registration",
+    "description": "Test user registration with valid name email and password to ensure a new user is created and a JWT token is issued."
+  },
+  {
+    "id": "TC002",
+    "title": "post api auth login user login",
+    "description": "Test user login with valid email and password to verify successful authentication and receipt of JWT token."
+  },
+  {
+    "id": "TC003",
+    "title": "get api auth me get current authenticated user",
+    "description": "Test retrieval of current authenticated user details using a valid JWT token."
+  },
+  {
+    "id": "TC004",
+    "title": "post api chat send message to ai chat",
+    "description": "Test sending a message to the AI chat endpoint and verify the AI response, conversation id, and optional workflow generation."
+  },
+  {
+    "id": "TC005",
+    "title": "get api workflows get all user workflows",
+    "description": "Test fetching all workflows for the authenticated user to verify correct workflows are returned."
+  },
+  {
+    "id": "TC006",
+    "title": "post api workflows create new workflow",
+    "description": "Test creating a new workflow with valid name description trigger and steps to ensure workflow is saved correctly."
+  },
+  {
+    "id": "TC007",
+    "title": "get api workflows id get specific workflow by id",
+    "description": "Test retrieving a specific workflow by its id to verify correct workflow details are returned."
+  },
+  {
+    "id": "TC008",
+    "title": "put api workflows id update workflow",
+    "description": "Test updating an existing workflow with optional fields including name description trigger steps and enabled status."
+  },
+  {
+    "id": "TC009",
+    "title": "delete api workflows id delete workflow",
+    "description": "Test deleting a workflow by id to ensure the workflow is removed successfully."
+  },
+  {
+    "id": "TC010",
+    "title": "post api workflows id execute manually execute workflow",
+    "description": "Test manual execution of a workflow by id and verify execution status and details are returned."
+  }
+]

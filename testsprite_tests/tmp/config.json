@@ -1,0 +1,18 @@
+{
+  "status": "commited",
+  "type": "frontend",
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:5173",
+  "loginUser": "Test1234",
+  "loginPassword": "Test12345678",
+  "executionArgs": {
+    "projectName": "Maximally",
+    "projectPath": "d:\\Project\\Maximally",
+    "testIds": [],
+    "additionalInstruction": "",
+    "envs": {
+      "API_KEY": "sk-user-k1PnaaIsshdGnsL5A7ybFy-VYY_1ZqwjzB7_2m24K2XP5QQg381pJ3E8JShEj1UwWe11LHH4zY1_aJN84gIBuFuzmPuCqBbXyHrj8ALGSa0-BfrXROJcmDNzuiTqiLmTv0s"
+    }
+  },
+  "proxy": "http://8a1fea90-9625-4dd6-b349-8cff0011c690:xW0Fc9NlNAhLFLVA7cAhG5QHFCn2Z9TT@tun.testsprite.com:8080"
+}

@@ -1,0 +1,10 @@
+{
+    "chat.mcp.serverSampling": {
+        "Maximally/.vscode/mcp.json: TestSprite": {
+            "allowedModels": [
+                "copilot/auto",
+                "copilot/claude-sonnet-4.5"
+            ]
+        }
+    }
+}

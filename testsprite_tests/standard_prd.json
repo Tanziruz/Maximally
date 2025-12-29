@@ -1,0 +1,256 @@
+{
+  "project_name": "AI-Powered Workflow Automation",
+  "project_description": "Build workflow automations through natural conversation instead of technical configuration. Users can describe workflows in plain English, and the AI builds them automatically.",
+  "features": [
+    {
+      "feature_name": "User Authentication",
+      "description": "JWT-based authentication system allowing users to register and login",
+      "requirements": [
+        "Users can register with email and password",
+        "Users can login with email and password",
+        "JWT tokens are issued upon successful authentication",
+        "Protected routes require valid JWT token",
+        "Passwords are hashed with bcrypt"
+      ]
+    },
+    {
+      "feature_name": "AI Chat Interface",
+      "description": "Conversational interface using Google Gemini AI to build workflows from natural language",
+      "requirements": [
+        "Users can send messages to chat with AI",
+        "AI generates workflow definitions from conversation",
+        "Conversation history is stored per user",
+        "Workflow preview is updated in real-time",
+        "Users can save generated workflows"
+      ]
+    },
+    {
+      "feature_name": "Workflow Management",
+      "description": "CRUD operations for workflow automations",
+      "requirements": [
+        "Users can create new workflows",
+        "Users can view all their workflows",
+        "Users can view individual workflow details",
+        "Users can update workflow configurations",
+        "Users can delete workflows",
+        "Users can enable/disable workflows"
+      ]
+    },
+    {
+      "feature_name": "Workflow Execution",
+      "description": "Execute workflow steps based on triggers and actions",
+      "requirements": [
+        "Support schedule triggers (cron expressions)",
+        "Support webhook triggers",
+        "Support manual triggers",
+        "Execute HTTP request actions",
+        "Send email actions",
+        "Data transformation actions",
+        "Conditional logic actions",
+        "Delay actions",
+        "Track execution history",
+        "Retry failed executions"
+      ]
+    },
+    {
+      "feature_name": "Webhook Handling",
+      "description": "Receive and process webhook triggers",
+      "requirements": [
+        "Each workflow gets a unique webhook URL",
+        "Webhook requests trigger workflow execution",
+        "Webhook payloads are passed to workflow steps",
+        "Support for different HTTP methods"
+      ]
+    }
+  ],
+  "apis": [
+    {
+      "endpoint": "/api/auth/register",
+      "method": "POST",
+      "description": "Register a new user",
+      "request_body": {
+        "name": "string",
+        "email": "string",
+        "password": "string"
+      },
+      "response": {
+        "success": "boolean",
+        "user": "object",
+        "token": "string"
+      }
+    },
+    {
+      "endpoint": "/api/auth/login",
+      "method": "POST",
+      "description": "Login an existing user",
+      "request_body": {
+        "email": "string",
+        "password": "string"
+      },
+      "response": {
+        "success": "boolean",
+        "user": "object",
+        "token": "string"
+      }
+    },
+    {
+      "endpoint": "/api/auth/me",
+      "method": "GET",
+      "description": "Get current authenticated user",
+      "response": {
+        "success": "boolean",
+        "user": "object"
+      }
+    },
+    {
+      "endpoint": "/api/chat",
+      "method": "POST",
+      "description": "Send a message to the AI chat",
+      "request_body": {
+        "message": "string",
+        "conversationId": "string (optional)"
+      },
+      "response": {
+        "success": "boolean",
+        "conversationId": "string",
+        "response": "string",
+        "workflow": "object (optional)"
+      }
+    },
+    {
+      "endpoint": "/api/workflows",
+      "method": "GET",
+      "description": "Get all workflows for the current user",
+      "response": {
+        "success": "boolean",
+        "workflows": "array"
+      }
+    },
+    {
+      "endpoint": "/api/workflows",
+      "method": "POST",
+      "description": "Create a new workflow",
+      "request_body": {
+        "name": "string",
+        "description": "string",
+        "trigger": "object",
+        "steps": "array"
+      },
+      "response": {
+        "success": "boolean",
+        "workflow": "object"
+      }
+    },
+    {
+      "endpoint": "/api/workflows/:id",
+      "method": "GET",
+      "description": "Get a specific workflow by ID",
+      "response": {
+        "success": "boolean",
+        "workflow": "object"
+      }
+    },
+    {
+      "endpoint": "/api/workflows/:id",
+      "method": "PUT",
+      "description": "Update a workflow",
+      "request_body": {
+        "name": "string (optional)",
+        "description": "string (optional)",
+        "trigger": "object (optional)",
+        "steps": "array (optional)",
+        "enabled": "boolean (optional)"
+      },
+      "response": {
+        "success": "boolean",
+        "workflow": "object"
+      }
+    },
+    {
+      "endpoint": "/api/workflows/:id",
+      "method": "DELETE",
+      "description": "Delete a workflow",
+      "response": {
+        "success": "boolean"
+      }
+    },
+    {
+      "endpoint": "/api/workflows/:id/execute",
+      "method": "POST",
+      "description": "Manually execute a workflow",
+      "response": {
+        "success": "boolean",
+        "execution": "object"
+      }
+    },
+    {
+      "endpoint": "/api/webhooks/:workflowId",
+      "method": "POST",
+      "description": "Webhook endpoint to trigger workflow execution",
+      "response": {
+        "success": "boolean",
+        "execution": "object"
+      }
+    }
+  ],
+  "database_schema": [
+    {
+      "table_name": "users",
+      "columns": [
+        {"name": "id", "type": "UUID", "constraints": "PRIMARY KEY"},
+        {"name": "name", "type": "VARCHAR(255)", "constraints": "NOT NULL"},
+        {"name": "email", "type": "VARCHAR(255)", "constraints": "UNIQUE NOT NULL"},
+        {"name": "password_hash", "type": "VARCHAR(255)", "constraints": "NOT NULL"},
+        {"name": "created_at", "type": "TIMESTAMP", "constraints": "DEFAULT NOW()"},
+        {"name": "updated_at", "type": "TIMESTAMP", "constraints": "DEFAULT NOW()"}
+      ]
+    },
+    {
+      "table_name": "workflows",
+      "columns": [
+        {"name": "id", "type": "UUID", "constraints": "PRIMARY KEY"},
+        {"name": "user_id", "type": "UUID", "constraints": "FOREIGN KEY REFERENCES users(id)"},
+        {"name": "name", "type": "VARCHAR(255)", "constraints": "NOT NULL"},
+        {"name": "description", "type": "TEXT", "constraints": ""},
+        {"name": "trigger", "type": "JSONB", "constraints": "NOT NULL"},
+        {"name": "steps", "type": "JSONB", "constraints": "NOT NULL"},
+        {"name": "enabled", "type": "BOOLEAN", "constraints": "DEFAULT true"},
+        {"name": "created_at", "type": "TIMESTAMP", "constraints": "DEFAULT NOW()"},
+        {"name": "updated_at", "type": "TIMESTAMP", "constraints": "DEFAULT NOW()"}
+      ]
+    },
+    {
+      "table_name": "conversations",
+      "columns": [
+        {"name": "id", "type": "UUID", "constraints": "PRIMARY KEY"},
+        {"name": "user_id", "type": "UUID", "constraints": "FOREIGN KEY REFERENCES users(id)"},
+        {"name": "messages", "type": "JSONB", "constraints": "NOT NULL"},
+        {"name": "workflow_draft", "type": "JSONB", "constraints": ""},
+        {"name": "created_at", "type": "TIMESTAMP", "constraints": "DEFAULT NOW()"},
+        {"name": "updated_at", "type": "TIMESTAMP", "constraints": "DEFAULT NOW()"}
+      ]
+    },
+    {
+      "table_name": "workflow_executions",
+      "columns": [
+        {"name": "id", "type": "UUID", "constraints": "PRIMARY KEY"},
+        {"name": "workflow_id", "type": "UUID", "constraints": "FOREIGN KEY REFERENCES workflows(id)"},
+        {"name": "status", "type": "VARCHAR(50)", "constraints": "NOT NULL"},
+        {"name": "trigger_data", "type": "JSONB", "constraints": ""},
+        {"name": "step_results", "type": "JSONB", "constraints": ""},
+        {"name": "error", "type": "TEXT", "constraints": ""},
+        {"name": "started_at", "type": "TIMESTAMP", "constraints": "DEFAULT NOW()"},
+        {"name": "completed_at", "type": "TIMESTAMP", "constraints": ""}
+      ]
+    }
+  ],
+  "tech_stack": {
+    "backend": ["Node.js", "Express.js", "TypeScript"],
+    "frontend": ["React 19", "Vite", "Tailwind CSS 4", "Zustand"],
+    "database": "PostgreSQL",
+    "cache": "Redis",
+    "queue": "BullMQ",
+    "ai": "Google Gemini API",
+    "deployment": "Docker"
+  }
+}

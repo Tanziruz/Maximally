@@ -1,0 +1,44 @@
+{
+  "name": "workflow-automation-backend",
+  "version": "1.0.0",
+  "description": "AI-powered workflow automation backend",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "worker": "tsx src/worker.ts",
+    "db:migrate": "tsx src/db/migrate.ts",
+    "db:seed": "tsx src/db/seed.ts"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.21.0",
+    "bcryptjs": "^2.4.3",
+    "bullmq": "^5.34.8",
+    "cors": "^2.8.5",
+    "cron-parser": "^4.9.0",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "ioredis": "^5.4.2",
+    "jsonwebtoken": "^9.0.2",
+    "node-cron": "^3.0.3",
+    "nodemailer": "^6.9.16",
+    "pg": "^8.13.1",
+    "uuid": "^11.0.5",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.1",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/node": "^22.15.27",
+    "@types/node-cron": "^3.0.11",
+    "@types/nodemailer": "^6.4.17",
+    "@types/pg": "^8.11.11",
+    "@types/uuid": "^10.0.0",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
+  }
+}
